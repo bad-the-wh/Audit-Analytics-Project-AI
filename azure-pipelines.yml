@@ -1,0 +1,36 @@
+# Runs the unit and end-to-end tests on every push and pull request to main.
+# Spark 4 needs Java 17 or later; the Microsoft-hosted Ubuntu image ships Java 17 and 21.
+trigger:
+  branches:
+    include: [main]
+
+pr:
+  branches:
+    include: [main]
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: "3.12"
+    displayName: Use Python 3.12
+
+  - script: |
+      echo "##vso[task.setvariable variable=JAVA_HOME]$JAVA_HOME_17_X64"
+    displayName: Use Java 17
+
+  - script: |
+      python -m pip install --upgrade pip
+      pip install -r requirements-dev.txt
+    displayName: Install dependencies
+
+  - script: python -m pytest -v --junitxml=test-results.xml
+    displayName: Run tests
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFiles: test-results.xml
+      testRunTitle: Audit lakehouse tests

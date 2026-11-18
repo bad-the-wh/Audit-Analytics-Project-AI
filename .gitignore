@@ -1,0 +1,15 @@
+# generated data: rebuild it with data_generator/generate_ledger.py
+data/
+spark-warehouse/
+metastore_db/
+derby.log
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+.env
+.DS_Store
+.idea/
+.vscode/
